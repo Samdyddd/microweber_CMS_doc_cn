@@ -364,16 +364,180 @@ blog.php
 </div>
 ```
 
+**blog_sidebar.php**
+
+```
+<div class="edit" rel="inherit" field="template_name_sidebar">
+    <h2>My sidebar</h2>
+    <module type="categories" />
+</div>
+```
+
+## 为post创建布局
+
+我们可以有一个内页来显示添加到博客中的文章。在userfiles/templates/starter/layouts/blog_inner.php中创建一个blog_inner.php文件，以显示添加到博客布局页面的文章。您还可以在模板文件夹的根目录中创建一个名为post.php或inner.php的文件，并将其用作所有页面中帖子的默认值。
+
+**blog_inner.php**
+
+```
+<?php include template_dir() . "header.php"; ?>
+
+<div class="edit" rel="content" field="template_name_content">
+    <div class="container" id="blog-container">
+        <div id="blog-content-<?php print CONTENT_ID; ?>">
+            <div class="row">
+                <div class="col-sm-9" id="blog-main-inner">
+                    <h3 class="edit" field="title" rel="content">Page Title</h3>
+                    <module data-type="pictures" data-template="slider" rel="content"/>
+                    <div class="edit" field="content_body" rel="content">
+                        <div class="element">
+                            <p align="justify">This text is set by default and is suitable for edit in real time. By
+                                default the drag and drop core feature will allow you to position it anywhere on  the site. Get creative, Make Web.</p>
+                        </div>
+                    </div>
+
+                    <module data-type="comments" data-template="default" data-content-id="<?php print CONTENT_ID; ?>"/>
+                </div>
+
+                <div class="col-sm-3" id="blog-sidebar">
+                    <?php include template_dir() . "layouts/blog_sidebar.php"; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include template_dir() . "footer.php"; ?>
+```
+
+## shop布局
+
+如果我们想要有一个商店页面在出模板，我们将需要作出一个商店布局和布局显示产品从商店。
+商店布局是通过在布局文件的定义中包含is_shop属性来创建的。您只能通过使用商店布局将产品添加到定义为商店的页面。
+在userfiles/templates/starter/layouts/shop创建一个新文件。当您创建新页面并选择“Shop”布局时，将加载此文件。
+
+**shop.php**
+
+```
+<?php
+/*
+type: layout
+content_type: dynamic
+name: Shop
+is_shop: y
+description: shop layout
+position: 4
+*/
+?>
+<?php include template_dir() . "header.php"; ?>
+
+<div class="edit" rel="content" field="template_name_content">
+    <div class="container nodrop">
+        <div class="row" id="shop-products-conteiner">
+            <div class="col-sm-12">
+                <h1>Shop</h1>
+            </div>
+
+            <div class="col-sm-8">
+                <module type="shop/products" limit="18" description-length="70"/>
+            </div>
+
+            <div class="col-sm-4">
+                <?php include template_dir() . 'layouts' . DS . "shop_sidebar.php"; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include template_dir() . "footer.php"; ?>
+```
+
+**shop_sidebar.php**
+
+```
+<div class="edit allow-drop" field="template_name_shop_sidebar" rel="inherit">
+    <h4 class="sidebar-title">Shop Categories</h4>
+    <module type="categories" content_id="<?php print PAGE_ID; ?>"/>
+</div>
+```
+你可能注意到我们在侧边栏中加载了“categories”模块，在布局中加载了“shop/products”模块
 
 
+## product 布局
 
+我们可以想要一个自定义布局来显示我们的每个产品。在“userfiles/templates/starter/layouts/shop_inner”中创建一个文件shop_inner.php。显示产品添加了php商店页面。您还可以在模板文件夹的根目录中创建一个名为product.php的文件，并将其用作没有内部布局的所有页面中产品的默认值。
 
+**shop_inner.php**
 
+```
+<?php include template_dir() . "header.php"; ?>
 
+<div class="edit" rel="content" field="template_name_content">
+    <div class="container nodrop">
+        <div class="row">
+            <div class="col-sm-8">
+                <h2 class="edit" field="title" rel="post">Product inner page</h2>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mw-col-container">
+                            <module type="pictures" rel="content" template="product_gallery"/>
+                        </div>
+                    </div>
 
+                    <div class="col-md-6">
+                        <div class="mw-col-container">
+                            <div class="product-description">
+                                <div class="edit" field="content_body" rel="post">
+                                    <p class="element">This text is set by default and is suitable for edit in real
+                                        time. By default the drag and drop core feature will allow you to position it
+                                        anywhere on the site. Get creative &amp; <strong style="font-weight: 600">Make
+                                            Web</strong>.</p>
+                                </div>
+                                <module type="shop/cart_add"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <br/><br/>
+                <h4 class="element sidebar-title">Related Products</h4>
+                <module type="shop/products" related="true" limit="3"/>
+                <p class="element">&nbsp;</p>
+            </div>
 
+            <div class="col-sm-4">
+                <?php include_once "shop_sidebar.php"; ?>
+            </div>
+        </div>
+    </div>
+</div>
 
+<?php include template_dir() . "footer.php"; ?>
+```
 
+## checkout 布局
+
+您必须在根模板文件夹/starter/checkout.php中创建一个文件checkout.php，该文件必须包含以下代码:
+
+**checkout.php**
+
+```
+<?php include template_dir() . "header.php"; ?>
+
+<div class="edit" rel="content" field="template_name_content">
+    <div class="container nodrop">
+        <h2>Complete your order</h2>
+        <module type="shop/checkout" id="cart_checkout"/>
+    </div>
+    <!-- DONT REMOVE -->
+</div>
+
+<?php include template_dir() . "footer.php"; ?>
+```
+
+这里我们加载了模块“shop/checkout”。
+这是所有。
+您可以从这个地址下载我们的Starter模板:https://github.com/microweber-templates/starter
 
 
